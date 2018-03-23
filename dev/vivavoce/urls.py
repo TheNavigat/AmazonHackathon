@@ -8,5 +8,5 @@ urlpatterns = [
     path('authenticate/', views.authenticate, name='authenicate'),
     path('record/', views.RecordView.as_view(), name='record'),
     path('upload/', views.upload, name='upload'),
-    path('rekognize/', views.rekognize, name='rekognize'),
+    path('rekognize/<int:id>', views.rekognize, name='rekognize'),
 ]

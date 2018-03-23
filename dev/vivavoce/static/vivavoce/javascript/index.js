@@ -12,7 +12,7 @@ function thinkingTimer(duration, display) {
         display.innerHTML= minutes + ":" + seconds;
 
         if (--timer < 0) {
-            
+
             startRecording();
         }
     }, 1000);
