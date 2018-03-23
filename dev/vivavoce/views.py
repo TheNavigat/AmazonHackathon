@@ -9,6 +9,7 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from binascii import a2b_base64
 from .libraries import s3
+from .models import Question
 
 def index(request):
     User = {}

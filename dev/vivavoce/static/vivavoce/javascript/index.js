@@ -1,7 +1,8 @@
 // TODO: SOME Clean up. Redundant code.
+var answerInterval;
 function thinkingTimer(duration, display) {
     var timer = duration, minutes, seconds;
-    var interval = setInterval(function () {
+    answerInterval = setInterval(function () {
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10);
 
@@ -11,16 +12,15 @@ function thinkingTimer(duration, display) {
         display.innerHTML= minutes + ":" + seconds;
 
         if (--timer < 0) {
-            window.clearInterval(interval);
-            talkingTimer(60,display);
-            triggerRecording();
+            
+            startRecording();
         }
     }, 1000);
 }
 
 function talkingTimer(duration, display) {
     var timer = duration, minutes, seconds;
-    interval = setInterval(function () {
+    answerInterval = setInterval(function () {
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10);
 
@@ -30,7 +30,7 @@ function talkingTimer(duration, display) {
         display.innerHTML= minutes + ":" + seconds;
 
         if (--timer < 0) {
-            window.clearInterval(interval);
+            stopRecording();
         }
     }, 1000);
 }
@@ -74,24 +74,28 @@ function startUserMedia(stream) {
   __log('Recorder initialised.');
 }
 
+
 function triggerRecording() {
     if (recorder['recording']) {
-        document.getElementById("micimage").src = "/../static/vivavoce/images/mic.png"
         return stopRecording();
     }
-
-    document.getElementById("micimage").src = "/../static/vivavoce/images/micred.png"
     return startRecording();
 }
 
 function startRecording() {
   recorder && recorder.record();
+  document.getElementById("micimage").src = "/../static/vivavoce/images/micred.png";
+  window.clearInterval(answerInterval);
+  talkingTimer(60,display);
   __log('Recording...');
 }
 
 function stopRecording() {
   recorder && recorder.stop();
+  document.getElementById("micimage").src = "/../static/vivavoce/images/mic.png";
+  window.clearInterval(answerInterval);
   __log('Stopped recording.');
+
 
   // create WAV download link using audio data blob
   uploadRecording();
