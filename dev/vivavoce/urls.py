@@ -6,5 +6,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('start/', views.start, name='start'),
     path('record/', views.RecordView.as_view(), name='record'),
+    path('upload/', views.upload, name='upload'),
 ]
 

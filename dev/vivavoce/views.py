@@ -2,8 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
-import json
-
+from .forms import UploadFileForm
 
 def index(request):
     User = {}
@@ -19,11 +18,14 @@ def start(request):
 
     return render(request, 'vivavoce/start.html', {'Question': Question})
 
-def record(request):
-    Question = {}
-    Question['number']= '2'
-    Question['total']= '30'
-    return render(request, 'vivavoce/start.html', {'Question': Question})
+def upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            # handle_uploaded_file(request.FILES['file'])
+            return HttpResponse(status=200)
+    return HttpResponse(status=400)
+
 
 class RecordView(generic.TemplateView):
     template_name = 'vivavoce/record.html'

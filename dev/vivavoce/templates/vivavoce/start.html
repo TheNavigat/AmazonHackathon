@@ -1,12 +1,25 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'vivavoce/style.css' %}" />
-<script src="{% static 'vivavoce/javascript/index.js' %}"></script>
 
-
-<div class="topleft"><h5>Exam time left: <span id="duration">45:00</span></h5></div>
-<div class="center">
-<h2><i>Question</i> {{Question.number}}/{{Question.total}}</h2>
-<p><img src="{% static 'vivavoce/images/soundwave.png' %}"></p> 
-<h1 id='timer'>00:30</h1>
-<p><a href="{% url 'vivavoce:record' %}"><img src="{% static 'vivavoce/images/mic.png' %}" height="80px" width="80px"></a></p> 
+<div class="topleft">
+    <h5>Exam time left: <span id="duration">45:00</span></h5>
 </div>
+
+<div class="center">
+    <h2><i>Question</i> {{Question.number}}/{{Question.total}}</h2>
+
+    <p>
+        <img src="{% static 'vivavoce/images/soundwave.png' %}">
+    </p>
+
+    <h1 id='timer'>00:30</h1>
+
+    <p>
+        <a onclick="triggerRecording()">
+            <img src="{% static 'vivavoce/images/mic.png' %}" height="80px" width="80px">
+        </a>
+    </p>
+</div>
+
+<script src="{% static 'vivavoce/javascript/recorder.js' %}"></script>
+<script src="{% static 'vivavoce/javascript/index.js' %}"></script>
