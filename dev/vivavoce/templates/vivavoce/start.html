@@ -6,7 +6,7 @@
 </div>
 
 <div class="center">
-    <h2><i>Question</i> {{Question.number}}/{{Question.total}}</h2>
+    <h2><i>Question</i> {{ question.id }}/{{ count }}</h2>
 
     <p>
         <img src="{% static 'vivavoce/images/soundwave.png' %}">
@@ -27,5 +27,16 @@
 <script src="{% static 'vivavoce/javascript/recorder.js' %}"></script>
 <script src="{% static 'vivavoce/javascript/js.cookie.js' %}"></script>
 <script src="{% static 'vivavoce/javascript/index.js' %}"></script>
+
+<script>
+    var audio = new Audio('{{ question.s3_name }}');
+    audio.play();
+
+    audio.addEventListener("ended", function(){
+        audio.currentTime = 0;
+        thinkingTimer(thinkingtime, display);
+        console.log("ended");
+    });
+</script>
 
 {% csrf_token %}
