@@ -21,6 +21,8 @@ def index(request):
 def start(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'vivavoce/start.html', { 'question': question, 'count': Question.objects.count() })
+def authenticate(request):
+    return render(request, 'vivavoce/basic.html')
 
 def upload(request):
     if request.method == 'POST':
@@ -63,7 +65,7 @@ def rekognize(path, id):
         }
     )
     if not not response['FaceMatches']:
-        return redirect('start');
+        return redirect('index');
 
 class RecordView(generic.TemplateView):
     template_name = 'vivavoce/record.html'

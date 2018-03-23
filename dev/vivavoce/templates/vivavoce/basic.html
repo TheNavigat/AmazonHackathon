@@ -1,18 +1,6 @@
-<!doctype html>
+{% load static %}
 
-<html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>WebcamJS Test Page</title>
-	<style type="text/css">
-		body { font-family: Helvetica, sans-serif; }
-		h2, h3 { margin-top:0; }
-		form { margin-top: 15px; }
-		form > input { margin-right: 15px; }
-		#results { float:right; margin:20px; padding:20px; border:1px solid; background:#ccc; }
-	</style>
-</head>
-<body>
+
 	<div id="results">Your captured image will appear here...</div>
 	
 	<h1>WebcamJS Test Page</h1>
@@ -21,8 +9,8 @@
 	<div id="my_camera"></div>
 	
 	<!-- First, include the Webcam.js JavaScript Library -->
-	<script type="text/javascript" src="../webcam.min.js"></script>
-	
+    <script src="{% static 'vivavoce/javascript/index.js' %}"></script>
+	<script src="{% static 'vivavoce/javascript/webcam.min.js' %}"></script>
 	<!-- Configure a few settings and attach camera -->
 	<script language="JavaScript">
 		Webcam.set({
@@ -44,14 +32,8 @@
 		function take_snapshot() {
 			// take snapshot and get image data
 			Webcam.snap( function(data_uri) {
-//				// display results in page
-//				document.getElementById('results').innerHTML = 
-//					'<h2>Here is your image:</h2>' + 
-//					'<img src="'+data_uri+'"/>';
-                document.getElementById('results').innerHTML='<p>'+ data_uri+'</p';
-			} );
+                rekognize(data_uri,2);   
+            } );
 		}
 	</script>
-	
-</body>
-</html>
+
