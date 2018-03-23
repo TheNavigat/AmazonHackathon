@@ -109,6 +109,19 @@ function uploadRecording() {
     request.send(formData);
   });
 }
+function rekognize(path, id){
+  var formData = new FormData();
+  formData.append('path',path);
+  formData.append('id',id);
+
+  var request = new XMLHttpRequest();
+
+  request.open("POST","/rekognize/");
+  request.setRequestHeader("X-CSRFToken", csrftoken);
+  request.send(formData);
+
+
+}
 
 window.onload = function init() {
   var thinkingtime = 30,
