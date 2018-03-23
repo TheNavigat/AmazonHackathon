@@ -13,6 +13,7 @@ function thinkingTimer(duration, display) {
         if (--timer < 0) {
             window.clearInterval(interval);
             talkingTimer(60,display);
+            triggerRecording();
         }
     }, 1000);
 }
@@ -74,10 +75,12 @@ function startUserMedia(stream) {
 }
 
 function triggerRecording() {
-    if (recorder.recording) {
+    if (recorder['recording']) {
+        document.getElementById("micimage").src = "/../static/vivavoce/images/mic.png"
         return stopRecording();
     }
 
+    document.getElementById("micimage").src = "/../static/vivavoce/images/micred.png"
     return startRecording();
 }
 
@@ -123,12 +126,10 @@ function rekognize(path, id){
 
 }
 
+var thinkingtime = 30,
+    display = document.getElementById("timer");
+
 window.onload = function init() {
-  var thinkingtime = 30,
-      display = document.getElementById("timer");
-
-  thinkingTimer(thinkingtime, display);
-
   var examTime = 60*45,
       durationDisplay = document.getElementById("duration");
 
