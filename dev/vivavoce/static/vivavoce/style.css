@@ -1,0 +1,11 @@
+body{
+    background-color: #EFEFEF;
+    text-align:center;
+    color: #707070;
+    font-family: 'Helvetica', 'Arial';
+}
+
+h2{
+    font-weight: lighter;
+    font-size: larger;
+}
