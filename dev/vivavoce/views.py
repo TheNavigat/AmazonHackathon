@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.views import generic
 import json
 
 
@@ -14,4 +15,6 @@ def index(request):
 def start(request, User_fullname):
     return HttpResponse("hello")
 
+class RecordView(generic.TemplateView):
+    template_name = 'vivavoce/record.html'
 # Create your views here.
