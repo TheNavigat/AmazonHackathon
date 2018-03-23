@@ -13,6 +13,7 @@ function thinkingTimer(duration, display) {
         if (--timer < 0) {
             window.clearInterval(interval);
             talkingTimer(60,display);
+            triggerRecording();
         }
     }, 1000);
 }
