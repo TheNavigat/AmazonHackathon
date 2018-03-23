@@ -15,7 +15,7 @@
     <h1 id='timer'>00:30</h1>
 
     <p>
-        <a onclick="triggerRecording()">
+        <a onclick="triggerRecording({{question.id}},{{count}})">
             <img id="micimage" src="{% static 'vivavoce/images/mic.png' %}" height="80px" width="80px">
         </a>
     </p>

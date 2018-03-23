@@ -1,5 +1,6 @@
 // TODO: SOME Clean up. Redundant code.
 var answerInterval;
+var questionid, questioncount;
 function thinkingTimer(duration, display) {
     var timer = duration, minutes, seconds;
     answerInterval = setInterval(function () {
@@ -75,8 +76,13 @@ function startUserMedia(stream) {
 }
 
 
-function triggerRecording() {
+function triggerRecording(id,count) {
     if (recorder['recording']) {
+        console.log("id is " + id + " out of "+count);
+        if(id<count){
+        questionid = id+1;
+        questioncount = count;
+        }
         return stopRecording();
     }
     return startRecording();
@@ -95,11 +101,10 @@ function stopRecording() {
   document.getElementById("micimage").src = "/../static/vivavoce/images/mic.png";
   window.clearInterval(answerInterval);
   __log('Stopped recording.');
-
+ 
 
   // create WAV download link using audio data blob
   uploadRecording();
-
   recorder.clear();
 }
 
@@ -114,6 +119,11 @@ function uploadRecording() {
     request.open("POST", "/upload/");
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.send(formData);
+    if(questioncount != null)
+    window.location.replace("/start/"+questionid);
+    else
+    window.location.replace("/thankyou/");
+
   });
 }
 function rekognize(path, id){

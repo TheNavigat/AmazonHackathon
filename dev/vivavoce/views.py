@@ -21,6 +21,10 @@ def index(request):
 def start(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'vivavoce/start.html', { 'question': question, 'count': Question.objects.count() })
+
+def thankyou(request):
+    return render(request, 'vivavoce/thankyou.html')
+    
 def authenticate(request):
     return render(request, 'vivavoce/basic.html')
 
