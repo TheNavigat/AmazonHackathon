@@ -1,7 +1,9 @@
 // TODO: SOME Clean up. Redundant code.
+var answerInterval;
+var questionid, questioncount;
 function thinkingTimer(duration, display) {
     var timer = duration, minutes, seconds;
-    var interval = setInterval(function () {
+    answerInterval = setInterval(function () {
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10);
 
@@ -11,15 +13,15 @@ function thinkingTimer(duration, display) {
         display.innerHTML= minutes + ":" + seconds;
 
         if (--timer < 0) {
-            window.clearInterval(interval);
-            talkingTimer(60,display);
+            
+            startRecording();
         }
     }, 1000);
 }
 
 function talkingTimer(duration, display) {
     var timer = duration, minutes, seconds;
-    interval = setInterval(function () {
+    answerInterval = setInterval(function () {
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10);
 
@@ -29,7 +31,7 @@ function talkingTimer(duration, display) {
         display.innerHTML= minutes + ":" + seconds;
 
         if (--timer < 0) {
-            window.clearInterval(interval);
+            stopRecording();
         }
     }, 1000);
 }
@@ -71,26 +73,36 @@ function startUserMedia(stream) {
   __log('Recorder initialised.');
 }
 
-function triggerRecording() {
-    if (recorder.recording) {
+
+function triggerRecording(id,count) {
+    if (recorder['recording']) {
+        console.log("id is " + id + " out of "+count);
+        if(id<count){
+        questionid = id+1;
+        questioncount = count;
+        }
         return stopRecording();
     }
-
     return startRecording();
 }
 
 function startRecording() {
   recorder && recorder.record();
+  document.getElementById("micimage").src = "/../static/vivavoce/images/micred.png";
+  window.clearInterval(answerInterval);
+  talkingTimer(60,display);
   __log('Recording...');
 }
 
 function stopRecording() {
   recorder && recorder.stop();
+  document.getElementById("micimage").src = "/../static/vivavoce/images/mic.png";
+  window.clearInterval(answerInterval);
   __log('Stopped recording.');
+ 
 
   // create WAV download link using audio data blob
   uploadRecording();
-
   recorder.clear();
 }
 
@@ -105,7 +117,25 @@ function uploadRecording() {
     request.open("POST", "/upload/");
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.send(formData);
+    if(questioncount != null)
+    window.location.replace("/start/"+questionid);
+    else
+    window.location.replace("/thankyou/");
+
   });
+}
+function rekognize(path, id){
+  var formData = new FormData();
+  formData.append('path',path);
+  formData.append('id',id);
+
+  var request = new XMLHttpRequest();
+
+  request.open("POST","/rekognize/");
+  request.setRequestHeader("X-CSRFToken", csrftoken);
+  request.send(formData);
+
+
 }
 
 var thinkingtime = 30,
