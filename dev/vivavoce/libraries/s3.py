@@ -15,4 +15,4 @@ def upload_to_s3(blob):
     for object in bucket.objects.all():
         count += 1
 
-    # s3.Object('testquestions-8853-5742-7832', 'answer' + str(count) + '.wav').put(Body=blob)
+    s3.Object('testquestions-8853-5742-7832', 'answer' + str(count) + '.wav').put(Body=blob)

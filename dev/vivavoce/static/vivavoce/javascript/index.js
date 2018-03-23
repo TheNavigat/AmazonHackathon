@@ -110,12 +110,10 @@ function uploadRecording() {
   });
 }
 
+var thinkingtime = 30,
+    display = document.getElementById("timer");
+
 window.onload = function init() {
-  var thinkingtime = 30,
-      display = document.getElementById("timer");
-
-  thinkingTimer(thinkingtime, display);
-
   var examTime = 60*45,
       durationDisplay = document.getElementById("duration");
 

@@ -14,11 +14,8 @@ def index(request):
     return render(request, 'vivavoce/index.html', {'User': User,'Exam':Exam,})
 
 def start(request, question_id):
-    Question = {}
-    Question['number']= '1'
-    Question['total']= '30'
-
-    return render(request, 'vivavoce/start.html', {'Question': Question})
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'vivavoce/start.html', { 'question': question, 'count': Question.objects.count() })
 
 def upload(request):
     if request.method == 'POST':
