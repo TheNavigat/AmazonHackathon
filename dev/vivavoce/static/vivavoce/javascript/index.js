@@ -56,7 +56,10 @@ function __log(e, data) {
 }
 
 var audio_context;
+var csrftoken = Cookies.get('csrftoken');
 var recorder;
+
+console.log(csrftoken);
 
 function startUserMedia(stream) {
   var input = audio_context.createMediaStreamSource(stream);
@@ -88,26 +91,22 @@ function stopRecording() {
   __log('Stopped recording.');
 
   // create WAV download link using audio data blob
-  createDownloadLink();
+  uploadRecording();
 
   recorder.clear();
 }
 
-function createDownloadLink() {
+function uploadRecording() {
   recorder && recorder.exportWAV(function(blob) {
-    // var url = URL.createObjectURL(blob);
-    // var li = document.createElement('li');
-    // var au = document.createElement('audio');
-    // var hf = document.createElement('a');
+    var formData = new FormData();
+    formData.append("file", blob);
 
-    // au.controls = true;
-    // au.src = url;
-    // hf.href = url;
-    // hf.download = new Date().toISOString() + '.wav';
-    // hf.innerHTML = hf.download;
-    // li.appendChild(au);
-    // li.appendChild(hf);
-    // recordingslist.appendChild(li);
+    var request = new XMLHttpRequest();
+
+    // TODO: Handle failures
+    request.open("POST", "/upload/");
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+    request.send(formData);
   });
 }
 

@@ -21,6 +21,7 @@ def start(request):
 def upload(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+        # TODO: Add else clause and add handling
         if form.is_valid():
             # handle_uploaded_file(request.FILES['file'])
             return HttpResponse(status=200)
