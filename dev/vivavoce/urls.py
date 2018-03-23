@@ -4,5 +4,7 @@ from . import views
 app_name = 'vivavoce'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('start/', views.start, name='start')
+    path('start/', views.start, name='start'),
+    path('record/', views.RecordView.as_view(), name='record'),
 ]
+
