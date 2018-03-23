@@ -11,7 +11,11 @@ def index(request):
     Exam['name'] = 'Psychology'
     return render(request, 'vivavoce/index.html', {'User': User,'Exam':Exam,})
 
-def start(request, User_fullname):
-    return HttpResponse("hello")
+def start(request):
+    Question = {}
+    Question['number']= '2'
+    Question['total']= '30'
+
+    return render(request, 'vivavoce/start.html', {'Question': Question})
 
 # Create your views here.
