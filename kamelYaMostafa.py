@@ -90,12 +90,12 @@ for i in range(1,7): #each one of the whole answer
 print("final score is" )
 print((accScore/600)*100 )
 ######## api thing
-def getScore(id):
+def getScore():
     scoreAcc=0
     for i in range(1,7):
         givenAnswer = userAnswersTable.get_item(
             Key={
-                'questionID': id,
+                'questionID': i,
             }
         )
         scoreValue= givenAnswer['Item']['Score']
@@ -105,4 +105,6 @@ def getScore(id):
             scoreAcc+=scoreValue
 
     return (scoreAcc/600)*100
+x= getScore()
+print(x)
 
