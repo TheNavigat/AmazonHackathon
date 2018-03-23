@@ -31,14 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'vivavoce.apps.VivavoceConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'boto3',
     'sslserver',
+    'vivavoce.apps.VivavoceConfig',
 ]
 
 MIDDLEWARE = [
