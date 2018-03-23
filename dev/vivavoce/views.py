@@ -1,16 +1,14 @@
-from django.shortcuts import render,redirect
+from .models import Question
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views import generic
 
 from .forms import UploadFileForm
-<<<<<<< HEAD
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from binascii import a2b_base64
-=======
 from .libraries import s3
->>>>>>> a8fe8730d1004e15217afe51adad02fca6260d62
 
 def index(request):
     User = {}
