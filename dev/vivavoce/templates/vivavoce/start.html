@@ -16,11 +16,14 @@
 
     <p>
         <a onclick="triggerRecording()">
-            <img src="{% static 'vivavoce/images/mic.png' %}" height="80px" width="80px">
+            <img id="micimage" src="{% static 'vivavoce/images/mic.png' %}" height="80px" width="80px">
         </a>
     </p>
 </div>
 
+<script type="text/javascript">
+    DJANGO_STATIC_URL = '{{ STATIC_URL }}';
+</script>
 <script src="{% static 'vivavoce/javascript/recorder.js' %}"></script>
 <script src="{% static 'vivavoce/javascript/js.cookie.js' %}"></script>
 <script src="{% static 'vivavoce/javascript/index.js' %}"></script>

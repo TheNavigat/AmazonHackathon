@@ -74,10 +74,12 @@ function startUserMedia(stream) {
 }
 
 function triggerRecording() {
-    if (recorder.recording) {
+    if (recorder['recording']) {
+        document.getElementById("micimage").src = "/../static/vivavoce/images/mic.png"
         return stopRecording();
     }
 
+    document.getElementById("micimage").src = "/../static/vivavoce/images/micred.png"
     return startRecording();
 }
 
