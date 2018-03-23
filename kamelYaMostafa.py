@@ -89,7 +89,6 @@ for i in range(1,7): #each one of the whole answer
 
 print("final score is" )
 print((accScore/600)*100 )
-/Users/mohamedaboughazala/PycharmProjects/untitled2/dbbb.py
 ######## api thing
 def getScore(id):
     scoreAcc=0
