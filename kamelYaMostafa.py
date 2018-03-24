@@ -6,24 +6,26 @@ questions= ["what is meant by the term latent heat?",
             "A beam of αlpha particles and Beta particles passes, in a vacuum, between the poles of a strong magnet. Compare the deflections of the paths of the two types of particle.",
             "A beam of αlpha particles and Beta particles passes, in a vacuum, between the poles of a strong magnet. Compare the deflections of the paths of the two types of particle."
             ]
+dynamodb = boto3.resource('dynamodb')
+modelAnswersTable = dynamodb.Table('modelAnswers')
+userAnswersTable = dynamodb.Table('userAnswers')
 
-modelAnswer = ["It is the energy required to change the state of an object from one state to the other with no change in temperature in between the states.",
+givenAnswer = ["It is the energy required to change the state of an object from one state to the other with no change in temperature in between the states.",
         "The energy is used to change the substance from liquid to vapour by overcoming the intermolecular forces.",
-        "Energy is lost as heat energy in coil.",
+        "Energy is lost as heat energy in the coil.",
         "It is possible to do two things, more voltage and more current.",
         "Beta waves are deflected more than alpha waves. The deflections are in opposite directions. The paths are curves.",
         "Beta waves are deflected more than alpha waves. The deflections are in opposite directions. The paths are curves."]
-givenAnswer=[]
 
 comprehend = boto3.client(service_name='comprehend', region_name='us-east-1')
 print('Calling DetectKeyPhrases')
-modelAnswerPhrases = comprehend.batch_detect_key_phrases(TextList=modelAnswer, LanguageCode="en")['ResultList']
+givenAnswerPhrases = comprehend.batch_detect_key_phrases(TextList=givenAnswer, LanguageCode="en")['ResultList']
 # givenAnswerPhrases = comprehend.batch_detect_key_phrases(TextList=givenAnswer, LanguageCode="en")['ResultList']
 bigset=[]
 for i in range(0,6): #answer
     answer=[]
     set=[]
-    for object in modelAnswerPhrases[i]['KeyPhrases']: #phrases
+    for object in givenAnswerPhrases[i]['KeyPhrases']: #phrases
         answer = object['Text']
         x = answer.split(" ")
         outputAnswer = ''
@@ -46,36 +48,72 @@ for i in range(0,6): #answer
                 outputAnswer+=tempAnswer+" "
         set.append(outputAnswer)
     bigset.append(set)
-print(bigset)
-answer1 =[ 'energy', 'state', 'object', 'one state', 'other', 'no change', 'temperature', 'states']
-weight1= [20,10,5,10,5,5,20,20,5]
-required1=[True,False,False,False,False,True,True,False]
-answer2 =['energy ', 'substance ', 'liquid ', 'vapour ', 'intermolecular forces ']
-weight2= [20,10,10,10,50]
-required2=[True,False,True,False,True]
-answer3 =['Energy', 'heat energy', 'coil']
-weight3= [5,80,15]
-required3=[False,True,True]
-answer4 =[ 'two things ', 'more voltage ', 'more current ']
-weight4= [0,50,50]
-required4=[False,True,True]
-answer5 =['Beta waves', 'more than alpha waves', 'The deflections', 'opposite directions', 'The paths', 'curves']
-weight5= [25,25,25,25,25,25]
-required5=[False,False,False,False,False,False,False,False]
-answer6 =['Beta waves', 'more than alpha waves', 'The deflections', 'opposite directions', 'The paths', 'curves']
-weight6= [25,25,25,25,25,25]
-required6=[False,False,False,False,False,False,False,False]
+# for k in range(0, 6):
+#     currentAnswer = bigset[k]
+#     print(currentAnswer)
 
-print('End of DetectKeyPhrases\n')
-table = dynamodb.Table('modelAnswers')
+accScore = 0
 
-for i in range(0,6): #answer
-    response = table.get_item(
+# Matching algorithm
+for i in range(1,7): #each one of the whole answer
+    modelAnswer = modelAnswersTable.get_item(
         Key={
             'questionID': i,
         }
     )
-    item1 = response['Item']['answer'][i]
-    item2 = response['Item']['weight'][i]
-    item3= response['Item']['required'][i]
-    print(item1 +" "+item2+" "+item3)
+
+    currentAnswer = bigset[i-1]
+    print(currentAnswer)
+    modelAnswerLength = len(modelAnswer['Item']['answer'])
+    score= 0
+    for j in range(0,modelAnswerLength): #each phrase
+        item1 = modelAnswer['Item']['answer'][j]
+        weightValue = modelAnswer['Item']['weight'][j]
+        isRequired= modelAnswer['Item']['required'][j]
+        found = False
+        for l in range(0,len(currentAnswer)):
+
+            if((currentAnswer[l].lower()).find(item1.lower())==0 ):
+                score+=weightValue
+                found=True
+
+        if(found==False and isRequired== True):
+            score=0
+            break
+    print(score)
+    userAnswersTable.put_item(
+        Item={
+            'questionID': i,
+            'Score': score,
+
+        }
+    )
+    accScore+=score
+
+print("final score is" )
+print((accScore/600)*100 )
+######## api thing
+def getScore():
+
+    check = userAnswersTable.get_item(Key={'questionID': 1,})
+    try:
+        check['Item']
+    except Exception as e:
+        return -1
+    scoreAcc=0
+    for i in range(1,7):
+        givenAnswer = userAnswersTable.get_item(
+            Key={
+                'questionID': i,
+            }
+        )
+        scoreValue= givenAnswer['Item']['Score']
+        if(scoreValue is  None):
+            return -1
+        else:
+            scoreAcc+=scoreValue
+
+    return (scoreAcc/600)*100
+x= getScore()
+print(x)
+

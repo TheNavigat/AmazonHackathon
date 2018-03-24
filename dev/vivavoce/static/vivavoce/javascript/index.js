@@ -1,6 +1,6 @@
 // TODO: SOME Clean up. Redundant code.
 var answerInterval;
-var questionid, questioncount;
+var questioncount;
 function thinkingTimer(duration, display) {
     var timer = duration, minutes, seconds;
     answerInterval = setInterval(function () {
@@ -13,7 +13,7 @@ function thinkingTimer(duration, display) {
         display.innerHTML= minutes + ":" + seconds;
 
         if (--timer < 0) {
-            
+
             startRecording();
         }
     }, 1000);
@@ -60,7 +60,7 @@ function __log(e, data) {
 var audio_context;
 var csrftoken = Cookies.get('csrftoken');
 var recorder;
-
+console.log(csrftoken);
 function startUserMedia(stream) {
   var input = audio_context.createMediaStreamSource(stream);
   __log('Media stream created.');
@@ -78,7 +78,6 @@ function triggerRecording(id,count) {
     if (recorder['recording']) {
         console.log("id is " + id + " out of "+count);
         if(id<count){
-        questionid = id+1;
         questioncount = count;
         }
         return stopRecording();
@@ -99,7 +98,7 @@ function stopRecording() {
   document.getElementById("micimage").src = "/../static/vivavoce/images/mic.png";
   window.clearInterval(answerInterval);
   __log('Stopped recording.');
- 
+
 
   // create WAV download link using audio data blob
   uploadRecording();
@@ -114,16 +113,17 @@ function uploadRecording() {
     var request = new XMLHttpRequest();
 
     // TODO: Handle failures
-    request.open("POST", "/upload/");
+    request.open("POST", "/upload/" + TEST_ID + "/" + QUESTION_ID + "/");
     request.setRequestHeader("X-CSRFToken", csrftoken);
     request.send(formData);
-    if(questioncount != null)
-    window.location.replace("/start/"+questionid);
-    else
-    window.location.replace("/thankyou/");
 
+    if(questioncount != null)
+      window.location.replace("/start/" + TEST_ID + "/" + (QUESTION_ID + 1) + "/");
+    else
+      window.location.replace("/thankyou/");
   });
 }
+
 function rekognize(path, id){
   var formData = new FormData();
   formData.append('path',path);
