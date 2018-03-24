@@ -47,7 +47,7 @@ def start(request, test_id, question_id):
         'count': Question.objects.count() })
 
 def thankyou(request, test_id, questions_count):
-    # _thread.start_new_thread( aws.transcribeFiles, (test_id, questions_count,))
+    _thread.start_new_thread( aws.transcribeFiles, (test_id, questions_count,))
     return render(request, 'vivavoce/thankyou.html', {'test_id': test_id})
 
 def authenticate(request, id):
