@@ -1,5 +1,7 @@
 import boto3
 import time
+import urllib.request
+import json
 
 from vivavoce.models import TranscribeJob
 
@@ -7,13 +9,36 @@ from vivavoce.models import TranscribeJob
 AWS_ACCESS_KEY = 'AKIAIO2NRGA6M25NZLYQ'
 AWS_SECRET_ACCESS_KEY = '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'
 
-def check_results():
-    while True:
-        status = transcribe.get_transcription_job(TranscriptionJobName=job_name)
-        if status['TranscriptionJob']['TranscriptionJobStatus'] in ['COMPLETED', 'FAILED']:
-            break
-        print('in progress....')
-        time.sleep(5)
+def transcribeFiles(quiz, questions):
+    transcribe = boto3.client('transcribe')
+    result = []
+    i = 1
+    while i <= 2:
+        transcribe.start_transcription_job(
+        TranscriptionJobName=str(quiz)+'-'+str(i),
+        Media={'MediaFileUri': "https://s3.amazonaws.com/testquestions-8853-5742-7832/" + "question"+str(i-1)+".mp3"},
+        MediaFormat='mp3',
+        LanguageCode='en-US',
+        MediaSampleRateHertz=22050
+        )
+        while True:
+            status = transcribe.get_transcription_job(TranscriptionJobName=str(quiz)+'-'+str(i))
+            if status['TranscriptionJob']['TranscriptionJobStatus'] in ['COMPLETED', 'FAILED']:
+                break
+            print(i)
+            time.sleep(5)
+        url = status['TranscriptionJob']['Transcript']['TranscriptFileUri']
+        response = urllib.request.urlopen(url)
+        data = response.read()
+        text = data.decode('utf-8')
+        d = json.loads(text)
+        string = ''
+        for sent in d['results']['transcripts']:
+            string+=(sent['transcript'])
+        result.append(string)
+        i = i + 1
+    print(result)
+    return result
 
 def transcribe(answer_uri, job_name):
     transcribe = boto3.client('transcribe')

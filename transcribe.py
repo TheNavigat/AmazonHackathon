@@ -1,8 +1,11 @@
 from __future__ import print_function
 import time
 import boto3
+import urllib.request
+import json
+
 transcribe = boto3.client('transcribe')
-job_name = "studewnsss41"
+job_name = "studewnsss41111111111111111"
 job_uri = "https://s3.amazonaws.com/testquestions-8853-5742-7832/polly2.mp3"
 transcribe.start_transcription_job(
     TranscriptionJobName=job_name,
@@ -17,4 +20,9 @@ while True:
         break
     print('in progress....')
     time.sleep(5)
-print(status)
+url = status['TranscriptionJob']['Transcript']['TranscriptFileUri']
+response = urllib.request.urlopen(url)
+data = response.read()
+text = data.decode('utf-8')
+d = json.loads(text)
+print(d['results']['transcripts'][0]['transcript'])

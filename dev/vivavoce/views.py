@@ -56,6 +56,7 @@ def upload(request, test_id, question_id):
         form = UploadFileForm(request.POST, request.FILES)
         # TODO: Add else clause and add handling
         if form.is_valid():
+            var 
             file_name = aws.upload_to_s3(
                 test_id,
                 question_id,
@@ -64,7 +65,7 @@ def upload(request, test_id, question_id):
 
             file_uri = 'https://s3.amazonaws.com/testquestions-8853-5742-7832/' + file_name
 
-            aws.transcribe(file_uri, file_name)
+            # aws.transcribe(file_uri, file_name)
             return HttpResponse(status=200)
 
     return HttpResponse(status=400)

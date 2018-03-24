@@ -114,6 +114,8 @@ def getScore():
             scoreAcc+=scoreValue
 
     return (scoreAcc/600)*100
+
+
 x= getScore()
 print(x)
 
