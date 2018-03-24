@@ -6,8 +6,9 @@
 	
 	<p><div id="my_camera"></div></p>
 	<!-- First, include the Webcam.js JavaScript Library -->
-    <script src="{% static 'vivavoce/javascript/index.js' %}"></script>
+    <script src="{% static 'vivavoce/javascript/js.cookie.js' %}"></script>
 	<script src="{% static 'vivavoce/javascript/webcam.min.js' %}"></script>
+    
 	<!-- Configure a few settings and attach camera -->
 	<script language="JavaScript">
 		Webcam.set({
@@ -29,9 +30,32 @@
 		function take_snapshot() {
 			// take snapshot and get image data
 			Webcam.snap( function(data_uri) {
-                rekognize(data_uri,2);   
+                //rekognize(data_uri,2);
+                var csrftoken = Cookies.get('csrftoken');
+                
+                var formData = new FormData();
+                
+                formData.append('path',data_uri);
+                
+
+                var request = new XMLHttpRequest();
+                request.onreadystatechange=function(){
+                    if(this.readyState==4 && this.status==200){
+                        window.location.replace('../');
+                    }
+                    else{
+                        if(this.readyState==4 && this.status==403){
+                            window.prompt("Wrong");
+                        }
+                    }
+                }
+                request.open("POST","/rekognize/2");
+                request.setRequestHeader("X-CSRFToken", csrftoken);
+                request.send(formData)
+
             } );
 		}
 	</script>
 	</div>
 
+{% csrf_token %}

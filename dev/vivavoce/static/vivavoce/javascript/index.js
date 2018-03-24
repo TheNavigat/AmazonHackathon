@@ -60,7 +60,7 @@ function __log(e, data) {
 var audio_context;
 var csrftoken = Cookies.get('csrftoken');
 var recorder;
-
+console.log(csrftoken);
 function startUserMedia(stream) {
   var input = audio_context.createMediaStreamSource(stream);
   __log('Media stream created.');
