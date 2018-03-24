@@ -103,6 +103,10 @@ def rekognize(request,id):
         return HttpResponse(status=200)
     else:
         return HttpResponse(status=403)
+
+def results(request, test_id):
+    return render(request, 'vivavoce/results.html');
+
 class RecordView(generic.TemplateView):
     template_name = 'vivavoce/record.html'
 # Create your views here.
