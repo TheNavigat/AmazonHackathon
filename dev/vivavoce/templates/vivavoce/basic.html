@@ -1,0 +1,37 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'vivavoce/style.css' %}" />
+	<div class="center">
+	<h2>Please Look at the camera<br />
+		and press detect</h2>
+	
+	<p><div id="my_camera"></div></p>
+	<!-- First, include the Webcam.js JavaScript Library -->
+    <script src="{% static 'vivavoce/javascript/index.js' %}"></script>
+	<script src="{% static 'vivavoce/javascript/webcam.min.js' %}"></script>
+	<!-- Configure a few settings and attach camera -->
+	<script language="JavaScript">
+		Webcam.set({
+			width: 426,
+			height: 320,
+			image_format: 'jpeg',
+			jpeg_quality: 90
+		});
+		Webcam.attach( '#my_camera' );
+	</script>
+	
+	<!-- A button for taking snaps -->
+	<form>
+		<input type="image" src="{% static 'vivavoce/images/detectbutton.png' %}" onClick="take_snapshot()">
+	</form>
+	
+	<!-- Code to handle taking the snapshot and displaying it locally -->
+	<script language="JavaScript">
+		function take_snapshot() {
+			// take snapshot and get image data
+			Webcam.snap( function(data_uri) {
+                rekognize(data_uri,2);   
+            } );
+		}
+	</script>
+	</div>
+
