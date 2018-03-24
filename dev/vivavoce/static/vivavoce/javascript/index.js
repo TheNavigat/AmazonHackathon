@@ -115,13 +115,18 @@ function uploadRecording() {
     // TODO: Handle failures
     request.open("POST", "/upload/" + TEST_ID + "/" + QUESTION_ID + "/");
     request.setRequestHeader("X-CSRFToken", csrftoken);
+   request.onreadystatechange=function(){
+                  if(this.readyState==4 && this.status==200){
+                  window.location.replace("/start/" + TEST_ID + "/" + (QUESTION_ID + 1) + "/");
+                      console.log("returned inside if");
+                  }
+              }
     request.send(formData);
-
     if(questioncount != null)
       window.location.replace("/start/" + TEST_ID + "/" + (QUESTION_ID + 1) + "/");
     else
-      window.location.replace("/thankyou/");
-  });
+      window.location.replace("/thankyou/");    });
+
 }
 
 function rekognize(path, id){
