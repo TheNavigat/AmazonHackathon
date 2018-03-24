@@ -11,7 +11,7 @@ from .libraries import aws
 
 from .models import Question, Test
 import boto3
-
+import os
 from boto3.dynamodb.conditions import Key, Attr
 from binascii import a2b_base64
 
@@ -67,7 +67,7 @@ def upload(request, test_id, question_id):
 
 def rekognize(request,id):
     path = request.POST.get("path","")
-    print(path)
+
     pathf = path[23:]
     binary_data = a2b_base64(pathf)
 
@@ -80,7 +80,6 @@ def rekognize(request,id):
         KeyConditionExpression=Key('ID').eq(id)
     )
     image=src['Items'][0]['image']
-    print(image)
     compareImagefile='image.jpeg'
     compareImage= open(compareImagefile,'rb')
     response = rekognition.compare_faces(
@@ -96,10 +95,10 @@ def rekognize(request,id):
         }
     )
     if not not response['FaceMatches']:
-
-        return HttpResponse(status=200);
+        print('hi')
+        return HttpResponse(status=200)
     else:
-        return HttpResponse(status=403);
+        return HttpResponse(status=403)
 class RecordView(generic.TemplateView):
     template_name = 'vivavoce/record.html'
 # Create your views here.
