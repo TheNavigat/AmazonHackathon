@@ -142,3 +142,25 @@ def upload_to_s3(test_id, question_id, blob):
     ).put(ACL='public-read', Body=blob)
 
     return file_name
+
+def getScore():
+
+    check = userAnswersTable.get_item(Key={'questionID': 1,})
+    try:
+        check['Item']
+    except Exception as e:
+        return -1
+    scoreAcc=0
+    for i in range(1,7):
+        givenAnswer = userAnswersTable.get_item(
+            Key={
+                'questionID': i,
+            }
+        )
+        scoreValue= givenAnswer['Item']['Score']
+        if(scoreValue is  None):
+            return -1
+        else:
+            scoreAcc+=scoreValue
+
+    return (scoreAcc/600)*100
