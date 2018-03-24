@@ -1,1 +1,11 @@
-Your score is {{ score }}!
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'vivavoce/style.css' %}" />
+
+<div class="center">
+{% if score >= 0 %}
+    <h1>Your score is {{ score }}!</h1>
+{% else %}
+    <h1>Still processing</h1>
+{% endif %}
+</div>

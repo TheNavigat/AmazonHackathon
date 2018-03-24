@@ -3,6 +3,7 @@ import time
 import urllib.request
 import json
 
+from boto3.dynamodb.conditions import Key, Attr
 from vivavoce.models import TranscribeJob
 
 
@@ -159,24 +160,22 @@ def getScore(test_id):
     )
 
     userAnswersTable = dynamodb.Table('userAnswers')
-    check = userAnswersTable.get_item(Key={'questionID': 1, 'testID': test_id,})
 
-    try:
-        check['Item']
-    except Exception as e:
+    data = userAnswersTable.scan(
+        FilterExpression=Attr('testID').eq(test_id)
+    )
+
+    if(data['Count'] <= 0):
         return -1
-    scoreAcc=0
-    for i in range(1,7):
-        givenAnswer = userAnswersTable.get_item(
-            Key={
-                'questionID': i,
-                'testID': test_id,
-            }
-        )
-        scoreValue= givenAnswer['Item']['Score']
-        if(scoreValue is  None):
+
+    scoreAcc = 0
+
+    for answer in data['Items']:
+        scoreValue = answer['Score']
+
+        if(scoreValue is None):
             return -1
         else:
-            scoreAcc+=scoreValue
+            scoreAcc += scoreValue
 
-    return (scoreAcc/600)*100
+    return(scoreAcc / data['Count'])
