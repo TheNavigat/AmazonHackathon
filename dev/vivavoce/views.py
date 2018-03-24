@@ -1,16 +1,24 @@
-from .models import Question
-from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import generic
+
 from string import whitespace
+
+
 from .forms import UploadFileForm
+from .libraries import aws
+from .models import Question
+
 import boto3
+
 from boto3.dynamodb.conditions import Key, Attr
 from binascii import a2b_base64
-from .libraries import s3
+
+
 from .models import Question
 import time
+
 
 def index(request):
     User = {}
@@ -21,7 +29,13 @@ def index(request):
 
 def start(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'vivavoce/start.html', { 'question': question, 'count': Question.objects.count() })
+    return render(request, 'vivavoce/start.html', {
+        'question': question,
+        'count': Question.objects.count() })
+
+def thankyou(request):
+    return render(request, 'vivavoce/thankyou.html')
+
 def authenticate(request):
     return render(request, 'vivavoce/basic.html')
 
@@ -30,9 +44,9 @@ def upload(request):
         form = UploadFileForm(request.POST, request.FILES)
         # TODO: Add else clause and add handling
         if form.is_valid():
-            print(request.FILES)
-            # handle_uploaded_file(request.FILES['file'])
-            s3.upload_to_s3(request.FILES['file'].read())
+            file_name = aws.upload_to_s3(request.FILES['file'].read())
+            file_uri = 'https://s3.amazonaws.com/testquestions-8853-5742-7832/' + file_name
+            aws.transcribe(file_uri)
             return HttpResponse(status=200)
     return HttpResponse(status=400)
 

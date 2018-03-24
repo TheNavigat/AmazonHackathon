@@ -9,4 +9,6 @@ urlpatterns = [
     path('record/', views.RecordView.as_view(), name='record'),
     path('upload/', views.upload, name='upload'),
     path('rekognize/<int:id>', views.rekognize, name='rekognize'),
+    path('thankyou/',views.thankyou,name='thankyou'),
+
 ]
