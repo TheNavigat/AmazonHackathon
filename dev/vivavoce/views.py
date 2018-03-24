@@ -8,8 +8,6 @@ from string import whitespace
 
 from .forms import UploadFileForm
 from .libraries import aws
-from .models import Question
-
 import boto3
 
 from boto3.dynamodb.conditions import Key, Attr
