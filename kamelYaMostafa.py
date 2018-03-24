@@ -53,12 +53,15 @@ for i in range(0,6): #answer
 #     print(currentAnswer)
 
 accScore = 0
+
+# Matching algorithm
 for i in range(1,7): #each one of the whole answer
     modelAnswer = modelAnswersTable.get_item(
         Key={
             'questionID': i,
         }
     )
+
     currentAnswer = bigset[i-1]
     print(currentAnswer)
     modelAnswerLength = len(modelAnswer['Item']['answer'])
@@ -91,6 +94,12 @@ print("final score is" )
 print((accScore/600)*100 )
 ######## api thing
 def getScore():
+
+    check = userAnswersTable.get_item(Key={'questionID': 1,})
+    try:
+        check['Item']
+    except Exception as e:
+        return -1
     scoreAcc=0
     for i in range(1,7):
         givenAnswer = userAnswersTable.get_item(
