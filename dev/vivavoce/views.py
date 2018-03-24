@@ -17,6 +17,9 @@ from binascii import a2b_base64
 
 import time
 
+import _thread
+
+
 def id(request):
     return render(request,'vivavoce/id.html')
 
@@ -43,10 +46,11 @@ def start(request, test_id, question_id):
         'question': question,
         'count': Question.objects.count() })
 
-def thankyou(request):
-    return render(request, 'vivavoce/thankyou.html')
+def thankyou(request, test_id, questions_count):
+    _thread.start_new_thread( aws.transcribeFiles, (test_id, questions_count,))
+    return render(request, 'vivavoce/thankyou.html', {'test_id': test_id})
 
-def authenticate(request,id):
+def authenticate(request, id):
     student={}
     student['id']=id
     return render(request, 'vivavoce/basic.html',{'student':student})
@@ -56,7 +60,6 @@ def upload(request, test_id, question_id):
         form = UploadFileForm(request.POST, request.FILES)
         # TODO: Add else clause and add handling
         if form.is_valid():
-            var 
             file_name = aws.upload_to_s3(
                 test_id,
                 question_id,

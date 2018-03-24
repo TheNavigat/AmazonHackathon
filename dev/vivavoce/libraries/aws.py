@@ -11,15 +11,15 @@ AWS_SECRET_ACCESS_KEY = 'nbgtfN8e7omWcdmZHnQiSu9i5al/L891U8bee0Ye'
 
 def transcribeFiles(quiz, questions):
     transcribe = boto3.client('transcribe')
-    result = []
+    givenAnswer = []
     i = 1
     while i <= questions:
         transcribe.start_transcription_job(
         TranscriptionJobName=str(quiz)+'-'+str(i),
-        Media={'MediaFileUri': "https://s3.amazonaws.com/testquestions-8853-5742-7832/" + str(quiz) + "-" + str(i)},
-        MediaFormat='mp3',
+        Media={'MediaFileUri': "https://s3.amazonaws.com/testquestions-8853-5742-7832/" + str(quiz) + "-" + str(i) + ".wav"},
+        MediaFormat='wav',
         LanguageCode='en-US',
-        MediaSampleRateHertz=22050
+        MediaSampleRateHertz=44100
         )
         while True:
             status = transcribe.get_transcription_job(TranscriptionJobName=str(quiz)+'-'+str(i))
@@ -35,17 +35,17 @@ def transcribeFiles(quiz, questions):
         string = ''
         for sent in d['results']['transcripts']:
             string+=(sent['transcript'])
-        result.append(string)
+        givenAnswer.append(string)
         i = i + 1
-    
-    print(result)
+
+    print(givenAnswer)
 
     comprehend = boto3.client(service_name='comprehend', region_name='us-east-1')
     print('Calling DetectKeyPhrases')
     givenAnswerPhrases = comprehend.batch_detect_key_phrases(TextList=givenAnswer, LanguageCode="en")['ResultList']
     # givenAnswerPhrases = comprehend.batch_detect_key_phrases(TextList=givenAnswer, LanguageCode="en")['ResultList']
     bigset=[]
-    for i in range(0,6): #answer
+    for i in range(0, questions): #answer
         answer=[]
         set=[]
         for object in givenAnswerPhrases[i]['KeyPhrases']: #phrases
@@ -77,8 +77,16 @@ def transcribeFiles(quiz, questions):
 
     accScore = 0
 
+    dynamodb = boto3.resource(
+        'dynamodb',
+        aws_access_key_id=AWS_ACCESS_KEY,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
+
     # Matching algorithm
-    for i in range(1,7): #each one of the whole answer
+    modelAnswersTable = dynamodb.Table('modelAnswers')
+
+    for i in range(1, questions + 1): #each one of the whole answer
         modelAnswer = modelAnswersTable.get_item(
             Key={
                 'questionID': i,
@@ -104,15 +112,15 @@ def transcribeFiles(quiz, questions):
                 score=0
                 break
         print(score)
+        userAnswersTable = dynamodb.Table('userAnswers')
         userAnswersTable.put_item(
             Item={
+                'testID': quiz,
                 'questionID': i,
                 'Score': score,
 
             }
         )
-
-    return result
 
 def transcribe(answer_uri, job_name):
     transcribe = boto3.client('transcribe')
@@ -143,9 +151,16 @@ def upload_to_s3(test_id, question_id, blob):
 
     return file_name
 
-def getScore():
+def getScore(test_id):
+    dynamodb = boto3.resource(
+        'dynamodb',
+        aws_access_key_id=AWS_ACCESS_KEY,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
 
-    check = userAnswersTable.get_item(Key={'questionID': 1,})
+    userAnswersTable = dynamodb.Table('userAnswers')
+    check = userAnswersTable.get_item(Key={'questionID': 1, 'testID': test_id,})
+
     try:
         check['Item']
     except Exception as e:
@@ -155,6 +170,7 @@ def getScore():
         givenAnswer = userAnswersTable.get_item(
             Key={
                 'questionID': i,
+                'testID': test_id,
             }
         )
         scoreValue= givenAnswer['Item']['Score']

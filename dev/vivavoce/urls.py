@@ -12,6 +12,5 @@ urlpatterns = [
     path('rekognize/<int:id>/', views.rekognize, name='rekognize'),
     path('results/<int:test_id>/', views.results, name='results'),
     path('upload/<int:test_id>/<int:question_id>/', views.upload, name='upload'),
-    path('thankyou/',views.thankyou,name='thankyou'),
-
+    path('thankyou/<int:test_id>/<int:questions_count>/', views.thankyou, name='thankyou'),
 ]
