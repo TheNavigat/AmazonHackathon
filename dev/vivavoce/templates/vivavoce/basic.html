@@ -44,7 +44,7 @@
                 var request = new XMLHttpRequest();
                 request.onreadystatechange=function(){
                     if(this.readyState==4 && this.status==200){
-												window.location.replace('../welcome/');
+												window.location.replace('../../welcome/');
 												console.log("returned inside if");
                     }
                     else{
@@ -58,7 +58,7 @@
                     }
                 }
                 var id={{student.id}};
-                id= "/rekognize/"+id;
+                id= "/rekognize/"+id+"/";
                 request.open("POST",id);
                 request.setRequestHeader("X-CSRFToken", csrftoken);
                 request.send(formData)
