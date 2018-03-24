@@ -23,9 +23,9 @@ import _thread
 def id(request):
     return render(request,'vivavoce/id.html')
 
-def index(request):
+def index(request,name):
     User = {}
-    User['fullname']= 'Karim ElGhandour'
+    User['fullname']= name
     Exam = {}
     Exam['name'] = 'Physics'
     return render(request, 'vivavoce/index.html', {'User': User,'Exam':Exam,})
@@ -88,6 +88,7 @@ def rekognize(request,id):
         KeyConditionExpression=Key('ID').eq(id)
     )
     image=src['Items'][0]['image']
+    name =src['Items'][0]['name']
     compareImagefile='image.jpeg'
     compareImage= open(compareImagefile,'rb')
     response = rekognition.compare_faces(
@@ -104,7 +105,7 @@ def rekognize(request,id):
     )
     if not not response['FaceMatches']:
         print('hi')
-        return HttpResponse(status=200)
+        return HttpResponse(name,status=200)
     else:
         return HttpResponse(status=403)
 

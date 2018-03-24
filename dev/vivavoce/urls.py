@@ -3,7 +3,7 @@ from . import views
 
 app_name = 'vivavoce'
 urlpatterns = [
-    path('welcome/', views.index, name='index'),
+    path('welcome/<str:name>/', views.index, name='index'),
     path('', views.id, name='id'),
     path('start/', views.start_init, name='start_init'),
     path('start/<int:test_id>/<int:question_id>/', views.start, name='start'),
