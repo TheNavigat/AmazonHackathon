@@ -17,6 +17,8 @@ from binascii import a2b_base64
 
 import time
 
+def id(request):
+    return render(request,'vivavoce/id.html')
 
 def index(request):
     User = {}
@@ -44,8 +46,10 @@ def start(request, test_id, question_id):
 def thankyou(request):
     return render(request, 'vivavoce/thankyou.html')
 
-def authenticate(request):
-    return render(request, 'vivavoce/basic.html')
+def authenticate(request,id):
+    student={}
+    student['id']=id
+    return render(request, 'vivavoce/basic.html',{'student':student})
 
 def upload(request, test_id, question_id):
     if request.method == 'POST':

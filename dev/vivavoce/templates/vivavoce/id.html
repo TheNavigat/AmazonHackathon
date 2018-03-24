@@ -1,0 +1,14 @@
+<div class="main">
+    Enter your ID: <br>
+    <form>
+    <input type="number" id="textArea">
+    </form>
+    <input type="button" value="Press" onClick="Test()">
+    <h1 id="headertest"></h1>
+<script language="JavaScript">
+		function Test(){
+                console.log(document.getElementById('textArea').value)
+            	window.location.replace('../authenticate/'+ document.getElementById('textArea').value);
+        }
+	</script>    
+</div>

@@ -52,7 +52,9 @@
                         }
                     }
                 }
-                request.open("POST","/rekognize/2");
+                var id={{student.id}};
+                id= "/rekognize/"+id;
+                request.open("POST",id);
                 request.setRequestHeader("X-CSRFToken", csrftoken);
                 request.send(formData)
 
