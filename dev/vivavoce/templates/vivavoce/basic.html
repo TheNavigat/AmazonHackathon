@@ -4,7 +4,7 @@
 	<h2>Please Look at the camera<br />
 		and press detect</h2>
 
-	<p><div id="my_camera"></div></p>
+	<p><div id="my_camera" ></div></p>
 	<!-- First, include the Webcam.js JavaScript Library -->
     <script src="{% static 'vivavoce/javascript/js.cookie.js' %}"></script>
 	<script src="{% static 'vivavoce/javascript/webcam.min.js' %}"></script>
@@ -12,8 +12,8 @@
 	<!-- Configure a few settings and attach camera -->
 	<script language="JavaScript">
 		Webcam.set({
-			width: 320,
-			height: 240,
+			width: 427,
+			height: 320,
 			image_format: 'jpeg',
 			jpeg_quality: 90
 		});
@@ -23,7 +23,7 @@
 	<!-- A button for taking snaps -->
 	<form>
 		<!-- <input type="image" src="{% static 'vivavoce/images/detectbutton.png' %}" onClick="take_snapshot()"> -->
-		<input type = "button" value="detect" onClick="take_snapshot()">
+		<input type = "button" id="btnDetect" class="button" value="DETECT" onClick="take_snapshot()">
 	</form>
 
 	<!-- Code to handle taking the snapshot and displaying it locally -->
@@ -36,18 +36,23 @@
 
                 var formData = new FormData();
 
-                formData.append('path',data_uri);
+				formData.append('path',data_uri);
+				document.getElementById("btnDetect").className = "buttonDisabled";
+				document.getElementById("btnDetect").disabled = true;
 
 
                 var request = new XMLHttpRequest();
                 request.onreadystatechange=function(){
                     if(this.readyState==4 && this.status==200){
-												window.location.replace('../');
+												window.location.replace('../welcome/');
 												console.log("returned inside if");
                     }
                     else{
-												console.log(this.readyState + " is the ready state and "+this.status);
+						console.log(this.readyState + " is the ready state and "+this.status);
                         if(this.readyState==4 && this.status==403){
+							document.getElementById("btnDetect").className = "button";
+							document.getElementById("btnDetect").disabled = false;
+
                             window.prompt("Wrong");
                         }
                     }

@@ -1,9 +1,11 @@
-<div class="main">
-    Enter your ID: <br>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'vivavoce/style.css' %}" />
+<div class="center">
+    <h4>Enter your ID:</h4>
     <form>
     <input type="number" id="textArea">
     </form>
-    <input type="button" value="Press" onClick="Test()">
+    <input type="button" class="button" value="PRESS" onClick="Test()">
     <h1 id="headertest"></h1>
 <script language="JavaScript">
 		function Test(){

@@ -32,3 +32,34 @@ h5{
 a img {
     cursor: pointer;
 }
+
+.button {
+    background-color: #C60000; /* Green */
+    border: none;
+    color: white;
+    padding: 28px 70px;
+    text-align: center;
+    text-decoration: none;
+    font-weight:bolder;
+    display: inline-block;
+    font-size: 30px;
+}
+.buttonDisabled {
+    background-color: #BFBFBF; /* Green */
+    border: none;
+    color: white;
+    padding: 28px 70px;
+    text-align: center;
+    text-decoration: none;
+    font-weight:bolder;
+    display: inline-block;
+    font-size: 30px;
+}
+
+input[type=number] {
+    width: 100%;
+    font-size:20px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}

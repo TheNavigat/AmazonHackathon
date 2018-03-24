@@ -24,7 +24,7 @@ def index(request):
     User = {}
     User['fullname']= 'Karim ElGhandour'
     Exam = {}
-    Exam['name'] = 'Psychology'
+    Exam['name'] = 'Physics'
     return render(request, 'vivavoce/index.html', {'User': User,'Exam':Exam,})
 
 def start_init(request):
