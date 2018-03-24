@@ -23,6 +23,8 @@
 
 <script type="text/javascript">
     DJANGO_STATIC_URL = '{{ STATIC_URL }}';
+    QUESTION_ID = {{ question.id }};
+    TEST_ID = {{ test.id }};
 </script>
 <script src="{% static 'vivavoce/javascript/recorder.js' %}"></script>
 <script src="{% static 'vivavoce/javascript/js.cookie.js' %}"></script>
