@@ -13,10 +13,10 @@ def transcribeFiles(quiz, questions):
     transcribe = boto3.client('transcribe')
     result = []
     i = 1
-    while i <= 2:
+    while i <= questions:
         transcribe.start_transcription_job(
         TranscriptionJobName=str(quiz)+'-'+str(i),
-        Media={'MediaFileUri': "https://s3.amazonaws.com/testquestions-8853-5742-7832/" + "question"+str(i-1)+".mp3"},
+        Media={'MediaFileUri': "https://s3.amazonaws.com/testquestions-8853-5742-7832/" + str(quiz) + "-" + str(i)},
         MediaFormat='mp3',
         LanguageCode='en-US',
         MediaSampleRateHertz=22050
@@ -37,7 +37,81 @@ def transcribeFiles(quiz, questions):
             string+=(sent['transcript'])
         result.append(string)
         i = i + 1
+    
     print(result)
+
+    comprehend = boto3.client(service_name='comprehend', region_name='us-east-1')
+    print('Calling DetectKeyPhrases')
+    givenAnswerPhrases = comprehend.batch_detect_key_phrases(TextList=givenAnswer, LanguageCode="en")['ResultList']
+    # givenAnswerPhrases = comprehend.batch_detect_key_phrases(TextList=givenAnswer, LanguageCode="en")['ResultList']
+    bigset=[]
+    for i in range(0,6): #answer
+        answer=[]
+        set=[]
+        for object in givenAnswerPhrases[i]['KeyPhrases']: #phrases
+            answer = object['Text']
+            x = answer.split(" ")
+            outputAnswer = ''
+
+            for j in range(0,len(x)):#each phrase
+                tempAnswer=x[j]
+                if tempAnswer=='the':
+                    tempAnswer =''
+                if tempAnswer=='The':
+                    tempAnswer =''
+                if tempAnswer=='a':
+                    tempAnswer =''
+                if tempAnswer=='A':
+                    tempAnswer =''
+                if tempAnswer=='an':
+                    tempAnswer =''
+                if tempAnswer == 'An':
+                    tempAnswer = ''
+                if (tempAnswer!='') :
+                    outputAnswer+=tempAnswer+" "
+            set.append(outputAnswer)
+        bigset.append(set)
+    # for k in range(0, 6):
+    #     currentAnswer = bigset[k]
+    #     print(currentAnswer)
+
+    accScore = 0
+
+    # Matching algorithm
+    for i in range(1,7): #each one of the whole answer
+        modelAnswer = modelAnswersTable.get_item(
+            Key={
+                'questionID': i,
+            }
+        )
+
+        currentAnswer = bigset[i-1]
+        print(currentAnswer)
+        modelAnswerLength = len(modelAnswer['Item']['answer'])
+        score= 0
+        for j in range(0,modelAnswerLength): #each phrase
+            item1 = modelAnswer['Item']['answer'][j]
+            weightValue = modelAnswer['Item']['weight'][j]
+            isRequired= modelAnswer['Item']['required'][j]
+            found = False
+            for l in range(0,len(currentAnswer)):
+
+                if((currentAnswer[l].lower()).find(item1.lower())==0 ):
+                    score+=weightValue
+                    found=True
+
+            if(found==False and isRequired== True):
+                score=0
+                break
+        print(score)
+        userAnswersTable.put_item(
+            Item={
+                'questionID': i,
+                'Score': score,
+
+            }
+        )
+
     return result
 
 def transcribe(answer_uri, job_name):
