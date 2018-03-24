@@ -120,7 +120,7 @@ function uploadRecording() {
     if(questioncount != null)
       window.location.replace("/start/" + TEST_ID + "/" + (QUESTION_ID + 1) + "/");
     else
-      window.location.replace("/thankyou/");
+      window.location.replace("/thankyou/"+ TEST_ID+"/"+ QUESTION_ID+"/");
   });
 }
 

@@ -11,6 +11,6 @@ urlpatterns = [
     path('record/', views.RecordView.as_view(), name='record'),
     path('rekognize/<int:id>', views.rekognize, name='rekognize'),
     path('upload/<int:test_id>/<int:question_id>/', views.upload, name='upload'),
-    path('thankyou/',views.thankyou,name='thankyou'),
+    path('thankyou/<int:test_id>/<int:question_id>/',views.thankyou,name='thankyou'),
 
 ]

@@ -43,7 +43,8 @@ def start(request, test_id, question_id):
         'question': question,
         'count': Question.objects.count() })
 
-def thankyou(request):
+def thankyou(request,test_id,question_id):
+    
     return render(request, 'vivavoce/thankyou.html')
 
 def authenticate(request,id):
